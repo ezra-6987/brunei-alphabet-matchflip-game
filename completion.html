@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Completed</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: url('assets/completion-background.png') no-repeat center center;
+            background-size: cover;
+            display: flex;
+            justify-content: flex-start;
+            align-items: flex-start;
+            height: 100vh;
+            padding: 4vh 4vw;
+            color: #fff;
+        }
+        .completion-container {
+            text-align: left; /* Align text to the left */
+            background: rgba(255, 255, 255, 0); /* White background with some transparency */
+            padding: 10px;
+            border-radius: 10px;
+            width: min(420px, 90vw);
+        }
+        .completion-container h1 {
+            font-size: 2rem; /* Adjust the font size */
+            color: #000; /* Change color to black */
+        }
+        .completion-container p, .completion-container img {
+            font-size: 1.2rem; /* Adjust the font size */
+            display: block; /* Ensure elements are displayed */
+            color: #4cb307; /* Change color to black */
+        }
+        .completion-container .btn {
+            margin-top: 20px;
+        }
+        .title-image {
+            width: 100%; /* Adjust the size */
+            max-width: 420px;
+            height: auto; /* Maintain aspect ratio */
+            margin-bottom: 12px; /* Add space below the title image */
+            max-height: 18vh;
+            object-fit: contain;
+        }
+        .completion-container img {
+            width: 100%; /* Ensure images fit within the container */
+            height: auto; /* Maintain aspect ratio */
+            object-fit: contain;
+        }
+        .quiz-score-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            background-color: rgb(171, 245, 171);
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-family: 'Proxima Nova', sans-serif;
+            font-size: clamp(16px, 2vw, 22px);
+            color: #03804c;
+            width: 100%;
+            max-width: 420px;
+            margin: 10px 0;
+        }
+        .quiz-score-text {
+            font-weight: bold;
+            margin-right: 60px;
+        }
+        .score-number {
+            font-weight: bold; /* Make the score bold */
+            color: #4cb307; /* Set a different color for the score */
+            margin-left: 60px;
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+        .btn-custom {
+            background-color: #007bff00; /* Primary blue color */
+            color: rgb(72, 1, 163); /* Text color */
+            font-size: 1.2rem; /* Font size */
+            padding: 10px 20px; /* Padding */
+            border-radius: 5px; /* Rounded corners */
+            border: none; /* Remove border */
+            cursor: pointer; /* Pointer cursor on hover */
+            transition: background-color 0.3s; /* Smooth transition for background color change */
+            font-family: 'Proxima Nova', sans-serif;
+        }
+        .btn-custom:hover {
+            background-color: #035014; /* Darker blue on hover */
+            color: #e2e2e2; /* Slightly lighter text color on hover */
+        }
+        #excellent-message {
+        max-height: 45vh;
+        object-fit: contain;
+        }
+
+
+    </style>
+</head>
+<body>
+    <div class="completion-container">
+        <img src="assets/complete.png" alt="Complete" class="title-image">
+        <img id="excellent-message" src="assets/excellent-message.png" alt="Master of Language!">
+        <p class="quiz-score-bar">
+            <span class="quiz-score-text">Quiz Score</span>
+            <span id="final-score" class="score-number">0</span>
+        </p>
+        <button class="btn btn-primary btn-custom" onclick="proceed()">Done</button>
+    </div>
+    <script>
+        function proceed() {
+            // Redirect to the next page or reload
+            window.location.href = 'index.html'; // Update this to the actual next page
+        }
+
+        // Function to display the final score and message/image
+        function displayCompletion(score) {
+            document.getElementById('final-score').innerText = score;
+            document.getElementById('completion-image').style.display = 'block';    
+        }
+
+        // Retrieve the score from local storage
+        let score = localStorage.getItem('score') || 0;
+        displayCompletion(score);
+    </script>
+</body>
+</html>
