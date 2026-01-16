@@ -1,170 +1,262 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Brunei Alphabet Card Game</title>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Honk&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Jersey+10&display=swap" rel="stylesheet">
-    <style>
-        body {
-            background-color: #c9f7c700;
-            background: url('assets/game-background.png') no-repeat center center;
-            background-size: cover;
-            overflow: hidden;
-            min-height: 100vh;
-        }
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(13, 60px);
-            grid-gap: 20px;
-            position: absolute;
-            top: 65%;
-            left: 45%;
-            transform: translate(-50%, -50%);
-            max-width: 70vw;
-        }
-        .card {
-            width: 75px;
-            height: 75px;
-            background: url('assets/scribble.jpg') no-repeat center center;
-            background-size: cover;
-            display: flex;
-            align-items:center;
-            justify-content:right;
-            font-size: 24px;
-            cursor: pointer;
-        }
-        .hidden {
-            background-color: rgb(255, 255, 255);
-        }
-        .card img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: none;
-        }
-        #message {
-            position: absolute;
-            bottom: 50%;
-            right: 200px;
-            transform: translateY(-50%);
-            background: #05050500;
-            padding: 10px;
-            border: 1px solid #eaeee900;
-            border-radius: 5px;
-            font-family: 'Jersey 10', sans-serif;
-            font-size: 30px;
-            color: aquamarine;
-        }
-        .title-image {
-            width: 30%; /* Adjust the size as needed */
-            height: auto; /* Maintain aspect ratio */
-            display: flex;
-            position: absolute;
-            justify-content: center;
-            align-items: center;
-            bottom: 60%;
-            left: 450px;
-            transform: translate(0,0);
-        }
-        .score {
-            display: flex;
-            position: absolute;
-            justify-content: center;
-            align-items: center;
-            top: 10%;
-            right: 10%;
-            transform: none;
-            background: #4b03f300;
-            padding: 10px;
-            border: 1px solid #2d03c500;
-            border-radius: 5px;
-            font-family: 'Proxima Nova Bold', sans-serif;
-            font-size: 50px;
-            color: rgb(135, 2, 224);
-            background-size: cover;
-            margin: 0 auto;
-            width: 200px;
-            height: 100px;
-        }
-        .text-box{
-            font-size: 23px;
-            color: rgb(35, 0, 116);
-            border: 2px solid rgba(255, 255, 255, 0);
-            padding: 10px;
-            margin: 20px 0;
-            background-color: rgba(255, 255, 255, 0);
-            display: flex;
-            position: absolute;
-            justify-content: center;
-            align-items: center;
-            bottom: 45%;
-            left:300px;
-            transform: translate(5%, -10%);
-            font-family: 'Proxima Nova Bold Italic', sans-serif;
-            font-weight: bold;
-        }
-        #next-target {
-            position: absolute;
-            top: 28%;
-            right: 12%;
-            text-align: center;
-            font-family: 'Proxima Nova Bold', sans-serif;
-        }
-        #target-img {
-            width: 90px;
-            height: 90px;
-            object-fit: cover;
-            border-radius: 14px;
-            border: 3px solid #8bcf9f;
-            background: rgba(255,255,255,0.35);
-        }
-        #target-name {
-            font-size: 22px;
-            color: #56fa15;
-            font-weight: 700;
-            text-transform: capitalize;
-            margin-top: 6px;
-            text-shadow: 0 1px 0 rgba(255,255,255,0.5);
-        }
-        .container, .main-content {
-            position: relative;
-            width: 100%;
-            height: 100vh;
-            max-width: none;
-            padding: 0;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Brunei Alphabet Card Game</title>
 
-    </style>
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Honk&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Jersey+10&display=swap" rel="stylesheet">
+
+  <style>
+    body{
+      margin:0;
+      min-height:100vh;
+      background: url('assets/game-background.png') no-repeat center center;
+      background-size: cover;
+      overflow-x:hidden;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    }
+
+    /* ===== Responsive page layout ===== */
+    .game-shell{
+      width: min(1200px, 96vw);
+      min-height: min(760px, 92vh);
+      margin: 0 auto;
+
+      display:grid;
+      grid-template-columns: 1.1fr 2fr 0.9fr;
+      gap: clamp(10px, 2vw, 24px);
+      align-items:center;
+
+      padding: clamp(10px, 2vw, 22px);
+    }
+
+    /* Tablet: 2 rows */
+    @media (max-width: 992px){
+      .game-shell{
+        grid-template-columns: 1fr 1fr;
+        grid-template-areas:
+          "left right"
+          "center center";
+        align-items:start;
+      }
+      .panel-left{ grid-area:left; }
+      .panel-center{ grid-area:center; }
+      .panel-right{ grid-area:right; }
+    }
+
+    /* Phone: stack */
+    @media (max-width: 576px){
+      .game-shell{
+        grid-template-columns: 1fr;
+        grid-template-areas:
+          "left"
+          "right"
+          "center";
+      }
+    }
+
+    .panel-left, .panel-center, .panel-right{
+      position:relative;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+    }
+
+    /* ===== Left panel ===== */
+    .left-box{
+      width: min(420px, 92%);
+      padding: clamp(10px, 2vw, 16px);
+      border-radius: 18px;
+      background: rgba(255,255,255,0.18);
+      border: 2px solid rgba(255,255,255,0.20);
+      backdrop-filter: blur(6px);
+      text-align:center;
+    }
+
+    .title-image{
+      width: min(360px, 90%);
+      height:auto;
+      object-fit:contain;
+      margin-bottom: 10px;
+    }
+
+    .text-box{
+      margin:0;
+      font-size: clamp(14px, 2.3vw, 20px);
+      font-weight: 800;
+      color: rgb(35, 0, 116);
+    }
+
+    /* ===== Center grid ===== */
+    .grid-wrap{
+      width: min(820px, 96vw);
+      margin: 0 auto;
+      padding: clamp(10px, 2vw, 18px);
+      border-radius: 18px;
+      background: rgba(255,255,255,0.10);
+      border: 2px solid rgba(255,255,255,0.12);
+      backdrop-filter: blur(6px);
+    }
+
+    .grid{
+      display:grid;
+      gap: clamp(6px, 1.2vw, 12px);
+
+      /* auto-fit adapts columns automatically */
+      grid-template-columns: repeat(auto-fit, minmax(clamp(44px, 6vw, 78px), 1fr));
+    }
+
+    .card{
+      width:100%;
+      aspect-ratio: 1 / 1;
+      border-radius: 12px;
+      background: url('assets/scribble.jpg') no-repeat center/cover;
+      cursor:pointer;
+      overflow:hidden;
+      position:relative;
+      box-shadow: 0 6px 14px rgba(0,0,0,0.18);
+      transition: transform 120ms ease;
+    }
+    .card:active{ transform: scale(0.98); }
+
+    .card img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:none;
+    }
+
+    /* ===== Right target panel ===== */
+    .hud{
+      width: min(260px, 92%);
+      padding: clamp(10px, 2vw, 16px);
+      border-radius: 18px;
+      background: rgba(255,255,255,0.18);
+      border: 2px solid rgba(255,255,255,0.20);
+      backdrop-filter: blur(6px);
+      text-align:center;
+    }
+
+    .hud-title{
+      font-weight: 900;
+      color: #0a3b24;
+      font-size: clamp(14px, 2.2vw, 18px);
+      margin-bottom: 10px;
+    }
+
+    #target-img{
+      width: clamp(72px, 14vw, 110px);
+      height: clamp(72px, 14vw, 110px);
+      object-fit: cover;
+      border-radius: 14px;
+      border: 3px solid #8bcf9f;
+      background: rgba(255,255,255,0.35);
+    }
+
+    #target-name{
+      margin-top: 10px;
+      font-size: clamp(14px, 2.4vw, 20px);
+      color: #56fa15;
+      font-weight: 900;
+      text-shadow: 0 1px 0 rgba(255,255,255,0.5);
+      text-transform: capitalize;
+    }
+
+    /* Optional message */
+    #message{
+      margin-top: 10px;
+      font-family: 'Jersey 10', sans-serif;
+      font-size: clamp(18px, 2.8vw, 28px);
+      color: aquamarine;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.25);
+      min-height: 32px;
+    }
+    #last-target {
+        position: absolute;
+        top: 48%;
+        right: 12%;
+        text-align: center;
+        opacity: 0.85;
+    }
+
+    #last-target img {
+        width: 70px;
+        height: 70px;
+        object-fit: cover;
+        border-radius: 12px;
+        border: 2px dashed #9be7b2;
+        background: rgba(255,255,255,0.25);
+    }
+
+    #last-target-name {
+        font-size: 16px;
+        color: #baffc9;
+        margin-top: 4px;
+    }
+    .card.matched {
+        pointer-events: none;
+        opacity: 1;
+    }
+
+
+  </style>
 </head>
-<body class="text-center">
-    <div class="container">
-        <div class="left-strip">
-            <div class="text-box">
-                Find and match the pairs of your Bruneian alphabets!
-            </div>
-        </div>
-        <div class="main-content">
+
+<div id="complete-overlay" style="
+  position: fixed;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,0.25);
+  z-index: 9999;
+">
+  <img src="assets/complete.png" alt="Complete" style="
+    width: min(520px, 85vw);
+    height: auto;
+    animation: popIn 700ms cubic-bezier(.2,1.2,.2,1) both;
+  ">
+</div>
+
+<style>
+@keyframes popIn {
+  0% { transform: scale(0.2) rotate(-6deg); opacity: 0; }
+  60% { transform: scale(1.08) rotate(2deg); opacity: 1; }
+  100% { transform: scale(1) rotate(0); opacity: 1; }
+}
+</style>
+
+<body>
+  <audio id="background-music" src="assets/background-music.mp3" autoplay loop></audio>
+
+  <main class="game-shell">
+    <!-- LEFT -->
+    <section class="panel-left">
+      <div class="left-box">
         <img src="assets/mix-and-match.png" alt="Mix & Match" class="title-image">
-        <audio id="background-music" src="assets/background-music.mp3" autoplay loop></audio>
-        <div class="score my-2">Score:<br><span id="score">0</span></div>
-        <!-- NEXT TARGET DISPLAY -->
-        <div id="next-target">
-            <img id="target-img" alt="Next target">
+        <p class="text-box">Find and match the correct Bruneian alphabet for the target!</p>
+      </div>
+    </section>
+
+    <!-- CENTER -->
+    <section class="panel-center">
+      <div class="grid-wrap">
+        <div class="grid" id="grid"></div>
+        <div id="message"></div>
+      </div>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="panel-right">
+      <div class="hud" id="next-target">
+        <div class="hud-title">Target to Match</div>
+        <img id="target-img" alt="Next target">
         <div id="target-name"></div>
       </div>
-
-        <div class="grid" id="grid">
-            <!-- Cards will be generated here -->
-        </div>
-        <div id="message" class="my-3"></div>
-      </div>
-    </div>
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script src="script.js"></script>
+    </aside>
+  <script src="script.js"></script>
 </body>
 </html>

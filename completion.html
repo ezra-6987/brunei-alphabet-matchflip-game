@@ -1,127 +1,298 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Game Completed</title>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body {
-            background: url('assets/completion-background.png') no-repeat center center;
-            background-size: cover;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            padding: 4vh 4vw;
-            color: #fff;
-        }
-        .completion-container {
-            text-align: center; /* Align text to the left */
-            background: rgba(255, 255, 255, 0); /* White background with some transparency */
-            padding: 10px;
-            border-radius: 10px;
-            width: min(420px, 90vw);
-        }
-        .completion-container h1 {
-            font-size: 2rem; /* Adjust the font size */
-            color: #000; /* Change color to black */
-        }
-        .completion-container p, .completion-container img {
-            font-size: 1.2rem; /* Adjust the font size */
-            display: block; /* Ensure elements are displayed */
-            color: #4cb307; /* Change color to black */
-        }
-        .completion-container .btn {
-            margin-top: 20px;
-        }
-        .title-image {
-            width: 100%; /* Adjust the size */
-            max-width: 420px;
-            height: auto; /* Maintain aspect ratio */
-            margin-bottom: 12px; /* Add space below the title image */
-            max-height: 18vh;
-            object-fit: contain;
-        }
-        .completion-container img {
-            width: 100%; /* Ensure images fit within the container */
-            height: auto; /* Maintain aspect ratio */
-            object-fit: contain;
-        }
-        .quiz-score-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 10px;
-            background-color: rgb(171, 245, 171);
-            padding: 10px 20px;
-            border-radius: 10px;
-            font-family: 'Proxima Nova', sans-serif;
-            font-size: clamp(16px, 2vw, 22px);
-            color: #03804c;
-            width: 100%;
-            max-width: 420px;
-            margin: 10px 0;
-        }
-        .quiz-score-text {
-            font-weight: bold;
-            margin-right: 60px;
-        }
-        .score-number {
-            font-weight: bold; /* Make the score bold */
-            color: #4cb307; /* Set a different color for the score */
-            margin-left: 60px;
-            padding: 5px 10px;
-            border-radius: 5px;
-        }
-        .btn-custom {
-            background-color: #007bff00; /* Primary blue color */
-            color: rgb(72, 1, 163); /* Text color */
-            font-size: 1.2rem; /* Font size */
-            padding: 10px 20px; /* Padding */
-            border-radius: 5px; /* Rounded corners */
-            border: none; /* Remove border */
-            cursor: pointer; /* Pointer cursor on hover */
-            transition: background-color 0.3s; /* Smooth transition for background color change */
-            font-family: 'Proxima Nova', sans-serif;
-        }
-        .btn-custom:hover {
-            background-color: #035014; /* Darker blue on hover */
-            color: #e2e2e2; /* Slightly lighter text color on hover */
-        }
-        #excellent-message {
-        max-height: 45vh;
-        object-fit: contain;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Game Completed</title>
 
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 
-    </style>
+  <style>
+    :root{
+      --card-w: min(520px, 92vw);
+      --glass: rgba(255,255,255,0.12);
+      --shadow: 0 14px 40px rgba(0,0,0,0.25);
+      --score-bg: rgba(171, 245, 171, 0.92);
+      --score-fill: #48d26f;
+      --score-text: #036a41;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: url('assets/completion-background.png') no-repeat center center;
+      background-size: cover;
+
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      overflow: hidden; /* confetti stays clean */
+      padding: clamp(12px, 3vw, 24px);
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    }
+
+    /* Confetti canvas */
+    #confetti {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .completion-container {
+      position: relative;
+      z-index: 2;
+
+      width: var(--card-w);
+      padding: clamp(12px, 2.5vw, 22px);
+      border-radius: 18px;
+      background: var(--glass);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(6px);
+
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 10px;
+    }
+
+    /* POP-IN “Complete” image */
+    .title-image {
+      width: 100%;
+      max-width: 420px;
+      height: auto;
+      object-fit: contain;
+
+      animation: popIn 800ms cubic-bezier(.2,1.2,.2,1) both;
+      transform-origin: center;
+    }
+
+    @keyframes popIn {
+      0%   { transform: scale(0.2) rotate(-6deg); opacity: 0; }
+      60%  { transform: scale(1.08) rotate(2deg); opacity: 1; }
+      100% { transform: scale(1) rotate(0deg); opacity: 1; }
+    }
+
+    /* Excellent message (subtle float) */
+    #excellent-message {
+      width: 100%;
+      max-height: min(48vh, 420px);
+      object-fit: contain;
+      animation: floaty 2.6s ease-in-out infinite;
+      filter: drop-shadow(0 10px 18px rgba(0,0,0,0.18));
+    }
+
+    @keyframes floaty {
+      0%,100% { transform: translateY(0); }
+      50%     { transform: translateY(-6px); }
+    }
+
+    /* Sparkle layer (CSS-only, lightweight) */
+    .sparkles {
+      position: absolute;
+      inset: -30px;
+      pointer-events: none;
+      opacity: 0.75;
+      z-index: 0;
+      overflow: hidden;
+      border-radius: 18px;
+    }
+
+    .sparkles::before,
+    .sparkles::after{
+      content:"";
+      position: absolute;
+      width: 220px;
+      height: 220px;
+      background: radial-gradient(circle, rgba(255,255,255,0.85) 0 6px, transparent 7px),
+                  radial-gradient(circle, rgba(255,255,255,0.65) 0 4px, transparent 5px),
+                  radial-gradient(circle, rgba(255,255,255,0.55) 0 3px, transparent 4px);
+      background-size: 90px 90px, 70px 70px, 55px 55px;
+      mix-blend-mode: screen;
+      filter: blur(0.2px);
+      opacity: 0.6;
+      animation: sparkleDrift 6.5s linear infinite;
+    }
+
+    .sparkles::before { top: 6%; left: 8%; }
+    .sparkles::after  { bottom: 10%; right: 6%; animation-duration: 8.5s; opacity: 0.5; }
+
+    @keyframes sparkleDrift {
+      from { transform: translateY(0) rotate(0deg); }
+      to   { transform: translateY(-38px) rotate(18deg); }
+    }
+
+    /* Score bar + fill animation */
+    .progress-wrap {
+      width: 100%;
+      background: rgba(0,0,0,0.08);
+      border-radius: 999px;
+      height: 14px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #2fd06a, var(--score-fill));
+      border-radius: 999px;
+      transition: width 1000ms cubic-bezier(.2,1,.2,1);
+    }
+
+    /* Button */
+    .btn-custom {
+      margin-top: 6px;
+      background: rgba(255,255,255,0.25);
+      border: 2px solid rgba(255,255,255,0.35);
+      color: #1f1f1f;
+      font-weight: 800;
+      padding: 10px 18px;
+      border-radius: 12px;
+      transition: transform 150ms ease, background 150ms ease;
+    }
+    .btn-custom:hover {
+      transform: translateY(-1px);
+      background: rgba(255,255,255,0.35);
+    }
+
+    /* Better scaling for small phones */
+    @media (max-width: 420px){
+      #excellent-message { max-height: 42vh; }
+      .quiz-score-bar { padding: 10px 12px; }
+    }
+  </style>
 </head>
+
 <body>
-    <div class="completion-container">
-        <img src="assets/complete.png" alt="Complete" class="title-image">
-        <img id="excellent-message" src="assets/excellent-message.png" alt="Master of Language!">
-        <p class="quiz-score-bar">
-            <span class="quiz-score-text">Quiz Score</span>
-            <span id="final-score" class="score-number">0</span>
-        </p>
-        <button class="btn btn-primary btn-custom" onclick="proceed()">Done</button>
+  <!-- Confetti -->
+  <canvas id="confetti"></canvas>
+
+  <div class="completion-container">
+    <div class="sparkles"></div>
+
+    <img src="assets/complete.png" alt="Complete" class="title-image">
+
+    <img id="excellent-message" src="assets/excellent-message.png" alt="Excellent">
+
+    <!-- Progress bar -->
+    <div class="progress-wrap" aria-label="Progress">
+      <div id="progress-fill" class="progress-fill"></div>
     </div>
-    <script>
-        function proceed() {
-            // Redirect to the next page or reload
-            window.location.href = 'index.html'; // Update this to the actual next page
+
+    <button class="btn btn-custom" onclick="proceed()">Done</button>
+  </div>
+
+  <script>
+  function proceed() {
+    window.location.href = 'index.html';
+  }
+
+  // ====== CONFIG ======
+  const MAX_SCORE = 26; // A-Z = 26 (change if needed)
+
+  // ====== PROGRESS + CELEBRATION ======
+  function displayCompletion(completedCount) {
+    completedCount = Number(completedCount) || 0;
+
+    const pct = Math.max(0, Math.min(100, (completedCount / MAX_SCORE) * 100));
+
+    // let layout paint first so CSS transition animates
+    requestAnimationFrame(() => {
+      document.getElementById('progress-fill').style.width = pct + '%';
+    });
+
+    // confetti always (stronger if fully complete)
+    if (completedCount >= MAX_SCORE) {
+      startConfetti({ durationMs: 3200, intensity: 1 });
+    } else {
+      startConfetti({ durationMs: 1600, intensity: 0.55 });
+    }
+  }
+
+  // pull progress from localStorage
+  const completedCount = localStorage.getItem('completedCount') || 0;
+  displayCompletion(completedCount);
+
+  // ====== CONFETTI (No library) ======
+  function startConfetti({ durationMs = 2500, intensity = 1 } = {}) {
+    const canvas = document.getElementById('confetti');
+    const ctx = canvas.getContext('2d');
+
+    function resize() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    const colors = ['#ff4d6d', '#ffd166', '#06d6a0', '#4cc9f0', '#b5179e', '#f77f00'];
+    const pieces = [];
+    const gravity = 0.18;
+    const drag = 0.995;
+
+    // lower particles on small screens for performance
+    const smallScreen = window.innerWidth < 480;
+    const base = smallScreen ? 120 : 180;
+    const count = Math.floor(base * intensity);
+
+    for (let i = 0; i < count; i++) {
+      pieces.push({
+        x: Math.random() * canvas.width,
+        y: -20 - Math.random() * canvas.height * 0.2,
+        w: 6 + Math.random() * 6,
+        h: 8 + Math.random() * 10,
+        vx: (-2 + Math.random() * 4) * (1.2 * intensity),
+        vy: (2 + Math.random() * 5) * (1.2 * intensity),
+        rot: Math.random() * Math.PI,
+        vr: (-0.15 + Math.random() * 0.3),
+        color: colors[Math.floor(Math.random() * colors.length)],
+        alpha: 0.9
+      });
+    }
+
+    const start = performance.now();
+
+    function tick(now) {
+      const elapsed = now - start;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      for (const p of pieces) {
+        p.vy += gravity;
+        p.vx *= drag;
+        p.vy *= drag;
+        p.x += p.vx;
+        p.y += p.vy;
+        p.rot += p.vr;
+
+        if (elapsed > durationMs * 0.7) {
+          p.alpha = Math.max(0, p.alpha - 0.015);
         }
 
-        // Function to display the final score and message/image
-        function displayCompletion(score) {
-            document.getElementById('final-score').innerText = score;
-            document.getElementById('completion-image').style.display = 'block';    
-        }
+        ctx.save();
+        ctx.globalAlpha = p.alpha;
+        ctx.translate(p.x, p.y);
+        ctx.rotate(p.rot);
+        ctx.fillStyle = p.color;
+        ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+        ctx.restore();
 
-        // Retrieve the score from local storage
-        let score = localStorage.getItem('score') || 0;
-        displayCompletion(score);
-    </script>
+        if (p.x < -50) p.x = canvas.width + 50;
+        if (p.x > canvas.width + 50) p.x = -50;
+      }
+
+      if (elapsed < durationMs) {
+        requestAnimationFrame(tick);
+      } else {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        window.removeEventListener('resize', resize);
+      }
+    }
+
+    requestAnimationFrame(tick);
+  }
+</script>
 </body>
 </html>

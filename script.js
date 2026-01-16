@@ -1,8 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
   const grid = document.getElementById('grid');
-  const scoreDisplay = document.getElementById('score');
+  const targetImg = document.getElementById('target-img');
+  const targetName = document.getElementById('target-name');
 
-  let score = 0;
   let isLocked = false;
 
   const imageMapping = {
@@ -34,22 +34,20 @@ document.addEventListener('DOMContentLoaded', () => {
     Z: 'zirafah.png'
   };
 
-  const letters = Object.keys(imageMapping);     // A..Z
-  const targetOrder = [...letters];              // order of targets
+  const letters = Object.keys(imageMapping); // A..Z
+  const targetOrder = [...letters];          // target sequence
   let currentTargetIndex = 0;
 
   function updateTargetUI() {
     const value = targetOrder[currentTargetIndex];
     const file = imageMapping[value];
 
-    document.getElementById('target-img').src = `assets/${file}`;
-    document.getElementById('target-name').textContent =
-      `${value} — ${file.replace('.png', '').replace(/-/g, ' ')}`;
+    targetImg.src = `assets/${file}`;
+    targetName.textContent = `${value} — ${file.replace('.png', '').replace(/-/g, ' ')}`;
   }
 
-  // ✅ ONE card per letter (no pairs)
-  const cardValues = [...letters];
-  cardValues.sort(() => 0.5 - Math.random());
+  // ✅ ONE card per letter, shuffled
+  const cardValues = [...letters].sort(() => Math.random() - 0.5);
 
   // Create cards
   cardValues.forEach(value => {
@@ -70,9 +68,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function handleCardClick(card) {
     if (isLocked) return;
-    if (card.classList.contains('hidden')) return;
+    if (card.classList.contains('matched')) return; // already correct
 
-    // Reveal
     const img = card.querySelector('img');
     img.style.display = 'block';
 
@@ -81,30 +78,48 @@ document.addEventListener('DOMContentLoaded', () => {
 
     isLocked = true;
 
-    // ✅ If matches target: keep/remove + next target
     if (value === target) {
+      // ✅ correct target -> keep it open permanently
       setTimeout(() => {
-        card.classList.add('hidden');
-        score++;
-        scoreDisplay.textContent = score;
+        card.classList.add('matched');
+        img.style.display = 'block';
 
         currentTargetIndex++;
+
         if (currentTargetIndex < targetOrder.length) {
           updateTargetUI();
+          isLocked = false;
         } else {
-          // Finished all targets
-          localStorage.setItem('score', score);
-          window.location.href = 'completion.html';
+          // ✅ finished all targets -> show full reveal + overlay then go
+          showCompleteAndGo();
         }
-
-        isLocked = false;
-      }, 250);
+      }, 200);
     } else {
-      // ❌ Not target: flip back
+      // ❌ wrong -> flip back
       setTimeout(() => {
         img.style.display = 'none';
         isLocked = false;
       }, 500);
     }
+  }
+
+  function revealAllCards() {
+    document.querySelectorAll('.card').forEach(card => {
+      const img = card.querySelector('img');
+      if (img) img.style.display = 'block';
+      card.classList.add('matched');
+    });
+  }
+
+  function showCompleteAndGo() {
+    revealAllCards();
+
+    const overlay = document.getElementById('complete-overlay');
+    if (overlay) overlay.style.display = 'flex';
+
+    setTimeout(() => {
+      localStorage.setItem('completedCount', targetOrder.length);
+      window.location.href = 'completion.html';
+    }, 1500);
   }
 });
