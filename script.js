@@ -3,6 +3,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const targetImg = document.getElementById('target-img');
   const targetName = document.getElementById('target-name');
 
+  if (!grid) return; // grid must exist
+
   let isLocked = false;
 
   const imageMapping = {
@@ -34,20 +36,27 @@ document.addEventListener('DOMContentLoaded', () => {
     Z: 'zirafah.png'
   };
 
-  const letters = Object.keys(imageMapping); // A..Z
-  const targetOrder = [...letters];          // target sequence
+  const letters = Object.keys(imageMapping);
+  const targetOrder = [...letters];
   let currentTargetIndex = 0;
 
   function updateTargetUI() {
     const value = targetOrder[currentTargetIndex];
     const file = imageMapping[value];
+    if (!value || !file) return;
 
-    targetImg.src = `assets/${file}`;
-    targetName.textContent = `${value} — ${file.replace('.png', '').replace(/-/g, ' ')}`;
+    if (targetImg) targetImg.src = `assets/${file}`;
+    if (targetName) {
+      targetName.textContent = `${value} — ${file.replace('.png', '').replace(/-/g, ' ')}`;
+    }
   }
 
-  // ✅ ONE card per letter, shuffled
-  const cardValues = [...letters].sort(() => Math.random() - 0.5);
+  // Fisher-Yates shuffle
+  const cardValues = [...letters];
+  for (let i = cardValues.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [cardValues[i], cardValues[j]] = [cardValues[j], cardValues[i]];
+  }
 
   // Create cards
   cardValues.forEach(value => {
@@ -68,7 +77,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function handleCardClick(card) {
     if (isLocked) return;
-    if (card.classList.contains('matched')) return; // already correct
+    if (card.classList.contains('matched')) return;
 
     const img = card.querySelector('img');
     img.style.display = 'block';
@@ -79,7 +88,6 @@ document.addEventListener('DOMContentLoaded', () => {
     isLocked = true;
 
     if (value === target) {
-      // ✅ correct target -> keep it open permanently
       setTimeout(() => {
         card.classList.add('matched');
         img.style.display = 'block';
@@ -90,12 +98,10 @@ document.addEventListener('DOMContentLoaded', () => {
           updateTargetUI();
           isLocked = false;
         } else {
-          // ✅ finished all targets -> show full reveal + overlay then go
           showCompleteAndGo();
         }
       }, 200);
     } else {
-      // ❌ wrong -> flip back
       setTimeout(() => {
         img.style.display = 'none';
         isLocked = false;
@@ -112,6 +118,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function showCompleteAndGo() {
+    isLocked = true; // lock inputs immediately
     revealAllCards();
 
     const overlay = document.getElementById('complete-overlay');
