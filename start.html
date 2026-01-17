@@ -201,19 +201,29 @@
         pointer-events: none;
         opacity: 1;
     }
+
+    /* pop-in animation */
+    @keyframes popIn {
+        0% { transform: scale(0.2) rotate(-6deg); opacity: 0; }
+        60% { transform: scale(1.08) rotate(2deg); opacity: 1; }
+        100% { transform: scale(1) rotate(0); opacity: 1; }
+    }
+
     /* ===== Phone: enlarge grid/cards ===== */
     @media (max-width: 576px){
     .grid-wrap{
-        width: 96vw;          /* use almost full screen width */
+        width: 96vw;
         padding: 14px;
     }
     .grid{
         gap: 12px;
-        grid-template-columns: repeat(7, 1fr);  /* 7 columns on phone */
+        grid-template-columns: repeat(7, 1fr);
     }
     .card{
         border-radius: 17px;
     }
+}
+
     /* ===== Tablet: slightly bigger grid ===== */
     @media (max-width: 992px){
     .grid-wrap{
@@ -222,9 +232,8 @@
     .grid{
         grid-template-columns: repeat(8, 1fr);
     }
-    }
-
 }
+
 </style>
 </head>
 <body>
@@ -237,23 +246,16 @@
     background: rgba(0,0,0,0.25);
     z-index: 9999;
   ">
-  <img src="assets/complete.png" alt="Complete" style="
-    width: min(520px, 85vw);
-    height: auto;
-    animation: popIn 700ms cubic-bezier(.2,1.2,.2,1) both;
-  ">
+    <img src="assets/complete.png" alt="Complete" style="
+      width: min(520px, 85vw);
+      height: auto;
+      animation: popIn 700ms cubic-bezier(.2,1.2,.2,1) both;
+    ">
   </div>
-  <style>
-    @keyframes popIn {
-    0% { transform: scale(0.2) rotate(-6deg); opacity: 0; }
-    60% { transform: scale(1.08) rotate(2deg); opacity: 1; }
-    100% { transform: scale(1) rotate(0); opacity: 1; }
-    }
-  </style>
+
   <audio id="background-music" src="assets/background-music.mp3" autoplay loop></audio>
 
   <main class="game-shell">
-    <!-- LEFT -->
     <section class="panel-left">
       <div class="left-box">
         <img src="assets/mix-and-match.png" alt="Mix & Match" class="title-image">
@@ -261,7 +263,6 @@
       </div>
     </section>
 
-    <!-- CENTER -->
     <section class="panel-center">
       <div class="grid-wrap">
         <div class="grid" id="grid"></div>
@@ -269,7 +270,6 @@
       </div>
     </section>
 
-    <!-- RIGHT -->
     <aside class="panel-right">
       <div class="hud" id="next-target">
         <div class="hud-title">Target to Match</div>
@@ -277,6 +277,8 @@
         <div id="target-name"></div>
       </div>
     </aside>
+  </main>
+
   <script src="script.js"></script>
 </body>
 </html>
