@@ -210,21 +210,32 @@
     }
 
     /* ===== Phone: enlarge grid/cards ===== */
-    @media (max-width: 580px){
+    @media (max-width: 576px){
     .grid-wrap{
-        width: 99vw;
-        padding: 12px;
+        width: 96vw;
+        padding: 14px;
     }
 
+    /* ✅ Make the grid use the available width, but with bigger tiles */
     .grid{
         gap: 12px;
-        grid-template-columns: repeat(7, 1fr); /* bigger cards */
+
+    /* 6 columns instead of 7 = bigger cards */
+        grid-template-columns: repeat(6, 1fr);
     }
 
+    /* ✅ Make each card bigger */
     .card{
-        border-radius: 5px;
-        width: 33.5px;
-        height: 33.5px;
+        border-radius: 18px;
+
+    /* this forces bigger square cards */
+        min-height: 64px;
+    }
+    .card img{
+        display:block;      /* when visible it fills card */
+        width:100%;
+        height:100%;
+        object-fit: cover;
     }
 
 }
